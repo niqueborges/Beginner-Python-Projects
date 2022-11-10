@@ -10,7 +10,9 @@ def guess(x):
         elif guess > random_number:
             print('Sorry, guess again. Too high. ')
 
-print(f'Yay, congrats. You have guessed the number. {random_number} correctly ')
+print(f'Yay, congrats. You have guessed the number (random_number) correctly. ')
 
     
-guess(10)
+def computer_guess(x):
+    low = 1
+    high = x
