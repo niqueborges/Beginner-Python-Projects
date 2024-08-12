@@ -13,3 +13,7 @@ turno_dia = ['Ana', 'João', 'Maria', 'José', 'Carlos']
 turno_noite = ['Mariana', 'Paulo', 'Pedro', 'Luana', 'Luiz']
 tem_carro = ['Ana', 'João', 'Maria', 'José', 'Carlos', 'Mariana', 'Paulo', 'Pedro']
 
+
+#Lista3
+lista3 = set(funcionarios).difference(tem_carro)
+print(lista3)
