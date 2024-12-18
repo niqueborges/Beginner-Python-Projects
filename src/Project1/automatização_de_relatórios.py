@@ -20,4 +20,7 @@ for row in rows:
 # Converter o dado para o pandas dataframe
 df = pd.DataFrame(data, columns=["Date", "Open", "High", "Low", "Close", "Adj Close", "Volume"])
 
-                    
+#Limpar e transformar o dado
+df["date"] = pd.to_datime(df["Date"])
+df = df.set_index("Date")
+df = df.astype({"Open":float, "High": float, "Low":float, "Close":float, "Adj Close":float, "Voluime": int})                    
