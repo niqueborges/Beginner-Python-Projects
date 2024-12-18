@@ -23,4 +23,15 @@ df = pd.DataFrame(data, columns=["Date", "Open", "High", "Low", "Close", "Adj Cl
 #Limpar e transformar o dado
 df["date"] = pd.to_datime(df["Date"])
 df = df.set_index("Date")
-df = df.astype({"Open":float, "High": float, "Low":float, "Close":float, "Adj Close":float, "Voluime": int})                    
+df = df.astype({"Open":float, "High": float, "Low":float, "Close":float, "Adj Close":float, "Voluime": int})
+
+# Analizando o dado e gerando relatório
+average_daily_return = df["Adj Close"].pct_change().mean()
+maximum_daily_return = df["Adj Close"].pct_change().max()
+minimum_daily_return = df["Adj Close"].pct_change().min()
+
+print("Average Daily Return:", average_daily_return)
+print("Maximum Daily Return:", minimum_daily_return)
+print("Minimum Daily Return:", minimum_daily_return)
+
+                    
