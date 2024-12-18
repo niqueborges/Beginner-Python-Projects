@@ -15,3 +15,13 @@ report = "Total Sales: $" + str(total_sales) + "\n"
 report += "Average Sales: $" + str(average_sales) + "\n"
 report += "Maximum Sales: $" + str(max_sales) + "\n"
 report += "Minimum Sales: $" + str(min_sales)
+
+# Enviando email
+
+outlook = win32.Dispatch("Outlook.Aplicationa")
+mail = outlook.CreateItem(O)
+mail.To = "recipient@email.com"
+mail.Subject = "Daily Sales Report"
+mail.Body = report
+mail.Attachments.Add("sales.csv")
+mail.Send()
