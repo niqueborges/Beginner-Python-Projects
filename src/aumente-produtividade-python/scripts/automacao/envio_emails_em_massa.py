@@ -1,15 +1,23 @@
+import os
 import win32com.client as win32
 import pandas as pd
 from dotenv import load_dotenv
-import os
 
 # Carregando variáveis de ambiente
 load_dotenv()
 
+# Caminho para o arquivo CSV
+csv_path = "src/aumente-produtividade-python/scripts/automacao/sales.csv"
+
 # Função principal
 def main():
-    # Lendo os dados de venda de um arquivo CSV
-    sales_data = pd.read_csv("sales.csv")
+    # Verifica se o arquivo CSV existe, se não, cria um vazio
+    if not os.path.exists(csv_path):
+        with open(csv_path, 'w') as f:
+            f.write("sales\n")  # Escreve um cabeçalho básico
+
+    # Lendo os dados de venda do arquivo CSV
+    sales_data = pd.read_csv(csv_path)
 
     # Processando os dados de vendas
     total_sales = sales_data["sales"].sum()
@@ -28,7 +36,7 @@ def main():
     # Recuperando o e-mail do destinatário do arquivo .env
     recipient_email = os.getenv("RECIPIENT_EMAIL")
 
-    # Enviando email
+    # Enviando e-mail
     send_email(recipient_email, "Daily Sales Report", report, "sales.csv")
 
 # Função para envio de e-mail
@@ -43,3 +51,4 @@ def send_email(recipient, subject, body, attachment):
 
 if __name__ == "__main__":
     main()
+
