@@ -34,4 +34,6 @@ print("Average Daily Return:", average_daily_return)
 print("Maximum Daily Return:", minimum_daily_return)
 print("Minimum Daily Return:", minimum_daily_return)
 
+# Salvando o relatório em CSV
+df.to_csv("daily_stock_prices.csv", index=True)
                     
