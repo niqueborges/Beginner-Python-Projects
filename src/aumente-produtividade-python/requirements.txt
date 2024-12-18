@@ -6,3 +6,5 @@ selenium
 openpyxl
 pytest
 mock
+datetime
+yfinance
