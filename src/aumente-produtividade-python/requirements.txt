@@ -7,4 +7,6 @@ openpyxl
 pytest
 mock
 datetime
-yfinance
+yfinance 
+python-dotenv
+pywin32
