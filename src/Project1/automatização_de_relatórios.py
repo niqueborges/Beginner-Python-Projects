@@ -16,4 +16,8 @@ for row in rows:
     cols = row.find_all("td")
     cols = [ele.text.strip()for ele in cols]
     data.append([ele for ele in cols if ele])
+
+# Converter o dado para o pandas dataframe
+df = pd.DataFrame(data, columns=["Date", "Open", "High", "Low", "Close", "Adj Close", "Volume"])
+
                     
