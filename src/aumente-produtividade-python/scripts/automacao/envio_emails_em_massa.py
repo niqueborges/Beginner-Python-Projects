@@ -1,5 +1,5 @@
 import os
-import win32com.client as win32
+import win32com.client as win64
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -41,14 +41,16 @@ def main():
 
 # Função para envio de e-mail
 def send_email(recipient, subject, body, attachment):
-    outlook = win32.Dispatch("Outlook.Application")
-    mail = outlook.CreateItem(0)  # 0 indica um e-mail padrão
-    mail.To = recipient
-    mail.Subject = subject
-    mail.Body = body
-    mail.Attachments.Add(attachment)
-    mail.Send()
+    try:
+        outlook = win64.Dispatch("Outlook.Application")
+        mail = outlook.CreateItem(0)  # 0 indica um e-mail padrão
+        mail.To = recipient
+        mail.Subject = subject
+        mail.Body = body
+        mail.Attachments.Add(attachment)
+        mail.Send()
+    except Exception as e:
+        print(f"Erro ao tentar enviar o email: {e}")
 
 if __name__ == "__main__":
     main()
-
