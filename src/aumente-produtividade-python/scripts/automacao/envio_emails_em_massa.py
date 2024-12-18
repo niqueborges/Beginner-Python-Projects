@@ -1,27 +1,45 @@
-import win32com.cliente as win32
+import win32com.client as win32
 import pandas as pd
+from dotenv import load_dotenv
+import os
 
-# Lendo os dados de venda de um arquivo CSV
-sales_data = pd.read_csv("sales.csv")
+# Carregando variáveis de ambiente
+load_dotenv()
 
-# Processando os dados de vendas
-total_sales = sales_data["sales"].sum()
-average_sales = sales_data["sales"].mean()
-max_sales = sales_data["sales"].max()
-min_sales = sales_data["sales"].min()
+# Função principal
+def main():
+    # Lendo os dados de venda de um arquivo CSV
+    sales_data = pd.read_csv("sales.csv")
 
-# Criando o relatório de vendas
-report = "Total Sales: $" + str(total_sales) + "\n"
-report += "Average Sales: $" + str(average_sales) + "\n"
-report += "Maximum Sales: $" + str(max_sales) + "\n"
-report += "Minimum Sales: $" + str(min_sales)
+    # Processando os dados de vendas
+    total_sales = sales_data["sales"].sum()
+    average_sales = sales_data["sales"].mean()
+    max_sales = sales_data["sales"].max()
+    min_sales = sales_data["sales"].min()
 
-# Enviando email
+    # Criando o relatório de vendas
+    report = (
+        f"Total Sales: ${total_sales:.2f}\n"
+        f"Average Sales: ${average_sales:.2f}\n"
+        f"Maximum Sales: ${max_sales:.2f}\n"
+        f"Minimum Sales: ${min_sales:.2f}"
+    )
 
-outlook = win32.Dispatch("Outlook.Aplicationa")
-mail = outlook.CreateItem(O)
-mail.To = "recipient@email.com"
-mail.Subject = "Daily Sales Report"
-mail.Body = report
-mail.Attachments.Add("sales.csv")
-mail.Send()
+    # Recuperando o e-mail do destinatário do arquivo .env
+    recipient_email = os.getenv("RECIPIENT_EMAIL")
+
+    # Enviando email
+    send_email(recipient_email, "Daily Sales Report", report, "sales.csv")
+
+# Função para envio de e-mail
+def send_email(recipient, subject, body, attachment):
+    outlook = win32.Dispatch("Outlook.Application")
+    mail = outlook.CreateItem(0)  # 0 indica um e-mail padrão
+    mail.To = recipient
+    mail.Subject = subject
+    mail.Body = body
+    mail.Attachments.Add(attachment)
+    mail.Send()
+
+if __name__ == "__main__":
+    main()
