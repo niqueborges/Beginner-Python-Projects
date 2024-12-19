@@ -1,6 +1,10 @@
 import os
-import win32com.client as win64
+import smtplib
 import pandas as pd
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 from dotenv import load_dotenv
 
 # Carregando variáveis de ambiente
@@ -33,24 +37,46 @@ def main():
         f"Minimum Sales: ${min_sales:.2f}"
     )
 
-    # Recuperando o e-mail do destinatário do arquivo .env
+    # Recuperando informações do .env
     recipient_email = os.getenv("RECIPIENT_EMAIL")
+    sender_email = os.getenv("SENDER_EMAIL")
+    sender_password = os.getenv("SENDER_PASSWORD")
 
     # Enviando e-mail
-    send_email(recipient_email, "Daily Sales Report", report, "sales.csv")
+    send_email(sender_email, sender_password, recipient_email, "Daily Sales Report", report, csv_path)
 
 # Função para envio de e-mail
-def send_email(recipient, subject, body, attachment):
+def send_email(sender, password, recipient, subject, body, attachment_path):
     try:
-        outlook = win64.Dispatch("Outlook.Application")
-        mail = outlook.CreateItem(0)  # 0 indica um e-mail padrão
-        mail.To = recipient
-        mail.Subject = subject
-        mail.Body = body
-        mail.Attachments.Add(attachment)
-        mail.Send()
+        # Configurando o e-mail
+        msg = MIMEMultipart()
+        msg["From"] = sender
+        msg["To"] = recipient
+        msg["Subject"] = subject
+
+        # Adicionando corpo do e-mail
+        msg.attach(MIMEText(body, "plain"))
+
+        # Adicionando anexo
+        with open(attachment_path, "rb") as attachment:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header(
+            "Content-Disposition",
+            f"attachment; filename={os.path.basename(attachment_path)}",
+        )
+        msg.attach(part)
+
+        # Conectando ao servidor SMTP
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()  # Ativando encriptação TLS
+            server.login(sender, password)
+            server.send_message(msg)
+
+        print("E-mail enviado com sucesso!")
     except Exception as e:
-        print(f"Erro ao tentar enviar o email: {e}")
+        print(f"Erro ao enviar o e-mail: {e}")
 
 if __name__ == "__main__":
     main()
