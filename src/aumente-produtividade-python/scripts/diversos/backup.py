@@ -14,3 +14,7 @@ def backup_and_upload():
     # Salvar backup dos dados em uma pasta local
     backup_folder = Path("backups")
     backup_folder.mkdir(exist_ok=True)
+    backup_file_path = backup_folder / f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
+    shutil.copy(file_path, backup_file_path)
+    # Upload do arquivo de backup em uma pasta do sharepoint
+    sharepoint_url =
