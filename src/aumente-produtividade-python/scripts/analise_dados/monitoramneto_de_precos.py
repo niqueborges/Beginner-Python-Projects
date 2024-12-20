@@ -24,5 +24,16 @@ def send_email(subject, body):
     smtp.sendmail(email_addres, to_email, message)
     smtp.quit()
     
+# Monitorar o preço das ações
+while True:
+    # Obter o preço atual das ações
+    response = requests.get(url)
+    content = response.content
+    start = content.find("data-reactid=\"50\"") + 20
+    end = content.find("</span>", start)
+    stock_price = float(content[start:end].replace(",", ""))
+    
+    
+    
 
 
