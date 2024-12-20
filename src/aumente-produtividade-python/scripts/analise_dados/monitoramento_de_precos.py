@@ -1,47 +1,65 @@
+# Refatorado para usar yfinance e .env
+
 import time
 import smtplib
-import requests
+import logging
+import os
+from dotenv import load_dotenv
+import yfinance as yf
 
-# URL do preço das ações da Tesla
-url = "https://finance.yahoo.com./quote/TSLA/"
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
 
-# Preço-alvo para monitorar
-target_price = 800
+# Configurar logs
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# Detalhes da conta de e-mail
-email_addres = "sender@example.com"
-email_password = "password"
-to_email = "receiver@example.com"
+# Configurações
+STOCK_SYMBOL = "TSLA"
+TARGET_PRICE = 800.0
 
-# Função para enviar alerta por e-mail
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+TO_EMAIL = os.getenv("TO_EMAIL")
 
 def send_email(subject, body):
-    smtp = smtplib.SMTP("smtp.gmail.com", 587)
-    smtp.ehlo()
-    smtp.starttls()
-    smtp.login(email_addres, email_password)
-    message = f"Subject: {subject}\n\n{body}"
-    smtp.sendmail(email_addres, to_email, message)
-    smtp.quit()
-    
-# Monitorar o preço das ações
-while True:
-    # Obter o preço atual das ações
-    response = requests.get(url)
-    content = response.content
-    start = content.find("data-reactid=\"50\"") + 20
-    end = content.find("</span>", start)
-    stock_price = float(content[start:end].replace(",", ""))
-    
-    # Verifica se o preço da ação atinge o preço-alvo
-    if stock_price >= target_price:
-        subject = "Tesla Stock Price Alert"
-        body = f"The stock price has reached $ {target_price}!"
-        send_email(subject, body)
-        break
-    
-    # Aguardar 1 minuto antes de verificar novamente
-    time.sleep(60)
+    """Função para enviar alerta por e-mail."""
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            message = f"Subject: {subject}\n\n{body}"
+            smtp.sendmail(EMAIL_ADDRESS, TO_EMAIL, message)
+            logging.info("E-mail enviado com sucesso.")
+    except Exception as e:
+        logging.error(f"Erro ao enviar e-mail: {e}")
+
+def get_stock_price():
+    """Obtém o preço atual da ação usando yfinance."""
+    try:
+        stock = yf.Ticker(STOCK_SYMBOL)
+        stock_price = stock.history(period="1d")["Close"].iloc[-1]
+        return float(stock_price)
+    except Exception as e:
+        logging.error(f"Erro ao obter preço da ação: {e}")
+        return None
+
+def monitor_stock_price():
+    """Monitora o preço da ação e envia alerta quando o preço-alvo for atingido."""
+    while True:
+        stock_price = get_stock_price()
+        if stock_price is not None:
+            logging.info(f"Preço atual da ação: ${stock_price:.2f}")
+            if stock_price >= TARGET_PRICE:
+                subject = "Tesla Stock Price Alert"
+                body = f"The stock price has reached ${stock_price:.2f}!"
+                send_email(subject, body)
+                break
+        time.sleep(60)
+
+if __name__ == "__main__":
+    monitor_stock_price()
+
         
     
     
