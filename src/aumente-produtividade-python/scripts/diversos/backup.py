@@ -22,5 +22,14 @@ def backup_and_upload():
     file_name = backup_file_path.name
     with open(backup_file_path, "rb") as f:
         requests.put(f"{sharepoint_url}/{file_name}", data=f)
+        
+    # Agendar o backup para rodar em uma data e horários específicos
+    schedule.every().monday.at("09:00").do(backup_and_upload)
+    schedule.every().wednesday.at("09:00").do(backup_and_upload)
+    schedule.every().friday.at("09:00").do(backup_and_upload)
+    
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
     
     
