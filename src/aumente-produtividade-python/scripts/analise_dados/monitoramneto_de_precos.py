@@ -33,6 +33,18 @@ while True:
     end = content.find("</span>", start)
     stock_price = float(content[start:end].replace(",", ""))
     
+    # Verifica se o preço da ação atinge o preço-alvo
+    if stock_price >= target_price:
+        subject = "Tesla Stock Price Alert"
+        body = f"The stock price has reached $ {target_price}!"
+        send_email(subject, body)
+        break
+    
+    # Aguardar 1 minuto antes de verificar novamente
+    time.sleep(60)
+        
+    
+    
     
     
 
