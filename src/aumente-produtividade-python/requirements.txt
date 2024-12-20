@@ -10,3 +10,4 @@ datetime
 yfinance 
 python-dotenv
 pywin32
+schedule
