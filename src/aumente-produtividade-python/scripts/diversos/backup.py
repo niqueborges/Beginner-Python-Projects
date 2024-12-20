@@ -16,5 +16,11 @@ def backup_and_upload():
     backup_folder.mkdir(exist_ok=True)
     backup_file_path = backup_folder / f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
     shutil.copy(file_path, backup_file_path)
+    
     # Upload do arquivo de backup em uma pasta do sharepoint
-    sharepoint_url =
+    sharepoint_url = "https://<company_name>.sharepoint.com/sites/site_name>/Shared%20Documents/backups"
+    file_name = backup_file_path.name
+    with open(backup_file_path, "rb") as f:
+        requests.put(f"{sharepoint_url}/{file_name}", data=f)
+    
+    
