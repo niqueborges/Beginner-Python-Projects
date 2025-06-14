@@ -28,3 +28,15 @@ if 'o' in nome:
 else:
     print('Não existe.')"""
 
+
+usuario = input('Nome do usuário: ')
+senha = input('Senha do usuário: ')
+
+usuario_bd = 'Monique'
+senha_bd = '123456'
+
+if usuario_bd == usuario and senha_bd == senha:
+    print('Você está logado no sistema.')
+else:
+    print('Usuário ou senha inválidos.')
+
