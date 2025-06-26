@@ -1,0 +1,4 @@
+﻿pytest
+black
+isort
+flake8
