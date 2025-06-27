@@ -1,53 +1,50 @@
-# Caminhos e comandos
-VENV = .venv
-PYTHON = $(VENV)/bin/python
-PIP = $(VENV)/bin/pip
+# Diretório do ambiente virtual
+VENV_DIR=venv
+PYTHON=$(VENV_DIR)/bin/python
+PIP=$(VENV_DIR)/bin/pip
 
-.PHONY: install run clean test lint format build reset freeze
+# Ambiente: development (padrão) ou production
+ENV ?= development
+ENV_FILE = .env.$(ENV)
 
-# Instala dependências do requirements.txt
+# Caminho do script principal (ajuste conforme seu projeto)
+SRC=.python-projects
+PYTHON=$(VENV_DIR)/bin/python
+
+# ========== Tarefas ==========
+
+# Cria o ambiente virtual e instala dependências 
+setup:
+	python3 -m venv $(VENV_DIR)
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements.txt
+
+# Ativa o ambiente (só exibe instrução)
+activate:
+	@echo "Use: source $(VENV_DIR)/bin/activate"
+
+# Instala dependências principais
 install:
-	$(PIP) install -r ../requirements.txt
+	$(PIP) install -r requirements.txt
 
-# Executa o app com variáveis do .env.dev
+# Executa a aplicação com as variáveis de ambiente corretas
 run:
-	ENV_FILE=.env.dev $(PYTHON) app.py
+	@echo "Executando em ambiente $(ENV)..."
+	@export $(shell cat $(ENV_FILE) | xargs) && $(PYTHON) $(MAIN)
 
-# Limpa arquivos compilados e caches
-clean:
-	find . -name "*.pyc" -delete
-	find . -name "__pycache__" -delete
-
-# Roda testes com unittest (mude para pytest se quiser)
-test:
-	$(PYTHON) -m unittest discover -s tests
-
-# Verifica estilo de código com flake8
-lint:
-	$(VENV)/bin/flake8 src tests
-
-# Formata código com black
+# Formata o código com Black
 format:
-	$(VENV)/bin/black .
+	$(VENV_DIR)/bin/black .
 
-# Gera build (para empacotar seu projeto)
-build:
-	$(PYTHON) setup.py sdist bdist_wheel
+# Executa testes com pytest
+test:
+	$(VENV_DIR)/bin/pytest
 
-# Remove virtualenv e arquivos de build/cache
-reset: clean
-	rm -rf $(VENV) dist *.egg-info .pytest_cache .mypy_cache
+# Remove arquivos temporários
+clean:
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -name "*.pyc" -delete
 
-# Gera ou atualiza requirements.txt com dependências instaladas
-freeze:
-	$(PIP) freeze > requirements.txt
-
-
-
-.PHONY: install run clean
-
-
-
-
-
-
+# Remove o ambiente virtual
+reset:
+	rm -rf $(VENV_DIR)
