@@ -1,0 +1,13 @@
+requests
+beautifulsoup4
+pandas
+lxml
+selenium 
+openpyxl
+pytest
+mock
+datetime
+yfinance 
+python-dotenv
+pywin32
+schedule
