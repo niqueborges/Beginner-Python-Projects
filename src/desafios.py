@@ -1,18 +1,18 @@
 # Cálculo da área de um círculo
 raio = 4
 pi = 3.14
-print(f"Área do círculo:' "+str(pi*raio**2))
+print(f"Área do círculo é: {pi * raio ** 2}. ")
 
 print('---')
 
-#Cálculo da área de um retângulo#
+# Cálculo da área de um retângulo#
 base = 2
 largura = 3
-print(f"Área do retângulo: "+str(base*largura))
+print(f"Área do retângulo é : {base*largura}. ")
 
-print('---'
+print('---')
       
-      # Desafio com if, elif e else
+# Desafio com if, elif e else
 
 '''
 Criar um programa que dependendo da temperatura (em celsius) do steak ele retorna o ponto do cozimento 
@@ -40,8 +40,6 @@ elif tem_celsius in range(65, 70):
     print('Medium Well (Bem ao ponto)')
 else:
     print('Well Done (Bem passada)')
-
-# Fim)
 
 print('---')
 
@@ -74,8 +72,8 @@ Criar um programa que gera 3 listas de acordo com as informações abaixo:
 Lista1= Funcionários que tem carro e trabalham à noite
 Lista2= Funcionários que tem carro e trabalham de dia
 Lista3= Funcionários que não tem carro
-
 '''
+
 funcionarios = ['Ana', 'João', 'Maria', 'José', 'Carlos', 'Mariana', 'Paulo', 'Pedro', 'Luana', 'Luiz']
 turno_dia = ['Ana', 'João', 'Maria', 'José', 'Carlos']
 turno_noite = ['Mariana', 'Paulo', 'Pedro', 'Luana', 'Luiz']
@@ -92,7 +90,8 @@ print(lista2)
 # Lista3: Funcionários que não têm carro
 lista3 = set(funcionarios).difference(tem_carro)
 print(lista3)
-# Fim do desafio com 'Sets'
+
+print('---')
 
 # Calculo de IMC - Indice de Massa Corporal
 
@@ -119,4 +118,3 @@ elif 30 <= IMC <= 39.9:
     print(f'Seu IMC é {IMC:.2f} e você está com obesidade grau 1.')
 else:
     print(f'Seu IMC é {IMC:.2f} e você está com obesidade grau 2.')
-# Fim do cálculo de IMC
