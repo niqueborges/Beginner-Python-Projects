@@ -1,53 +1,36 @@
-# Caminhos e comandos
-VENV = .venv
-PYTHON = $(VENV)/bin/python
-PIP = $(VENV)/bin/pip
+# Detecta o ambiente virtual que está ATIVO no seu terminal.
+# Se nenhum estiver ativo, ele usa o 'python3' do sistema (o que causa o erro).
+PYTHON := $(or $(wildcard $(VIRTUAL_ENV)/bin/python),python3)
 
-.PHONY: install run clean test lint format build reset freeze
+# Define o nome do arquivo de dependências (agora na mesma pasta)
+REQUIREMENTS_FILE = requirements.txt
 
-# Instala dependências do requirements.txt
+# --- Comandos do Projeto ---
+
+.PHONY: help install run-dev run-prod clean
+
+# Comando 'help' para exibir a ajuda
+help:
+	@echo "Comandos disponíveis:"
+	@echo "  make install    -> Instala as dependências de $(REQUIREMENTS_FILE)"
+	@echo "  make run-dev    -> Executa a aplicação em ambiente de desenvolvimento"
+	@echo "  make clean      -> Remove arquivos temporários do Python"
+
+# Comando 'install' para instalar dependências
 install:
-	$(PIP) install -r ../requirements.txt
+	@echo "Usando o Python em: $(PYTHON)"
+	@echo "Instalando dependências de $(REQUIREMENTS_FILE)..."
+	$(PYTHON) -m pip install -r $(REQUIREMENTS_FILE)
 
-# Executa o app com variáveis do .env.dev
-run:
-	ENV_FILE=.env.dev $(PYTHON) app.py
+# Comando 'run-dev' para executar em modo de desenvolvimento
+run-dev:
+	@echo "Iniciando a aplicação em modo de Desenvolvimento..."
+	export FLASK_ENV=development && \
+	export ENV_FILE=.env.dev && \
+	$(PYTHON) app.py
 
-# Limpa arquivos compilados e caches
+# Comando 'clean' para limpar o projeto
 clean:
-	find . -name "*.pyc" -delete
-	find . -name "__pycache__" -delete
-
-# Roda testes com unittest (mude para pytest se quiser)
-test:
-	$(PYTHON) -m unittest discover -s tests
-
-# Verifica estilo de código com flake8
-lint:
-	$(VENV)/bin/flake8 src tests
-
-# Formata código com black
-format:
-	$(VENV)/bin/black .
-
-# Gera build (para empacotar seu projeto)
-build:
-	$(PYTHON) setup.py sdist bdist_wheel
-
-# Remove virtualenv e arquivos de build/cache
-reset: clean
-	rm -rf $(VENV) dist *.egg-info .pytest_cache .mypy_cache
-
-# Gera ou atualiza requirements.txt com dependências instaladas
-freeze:
-	$(PIP) freeze > requirements.txt
-
-
-
-.PHONY: install run clean
-
-
-
-
-
-
+	@echo "Limpando arquivos temporários..."
+	find . -type f -name "*.py[co]" -delete
+	find . -type d -name "__pycache__" -delete
